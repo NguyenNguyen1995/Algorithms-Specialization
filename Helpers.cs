@@ -8,31 +8,30 @@ namespace Algorithms_Specialization
 {
     public class Helpers
     {
-        public static List<List<int>> LoadGraphFromFile(string filename)
+        public static Dictionary<int, List<int>> LoadGraphFromFile(string filename)
         {
-            var result = new List<List<int>>();
+            var result = new Dictionary<int, List<int>>();
             using (var file = new StreamReader(filename))
             {
                 string line;
-                int counter = 0;
                 while ((line = file.ReadLine()) != null)
                 {
-                    result.Add(line.Trim().Split("\t").Skip(1).Select(n => int.Parse(n)).ToList());
-                    counter++;
+                    var temp = line.Trim().Split().Select(n => int.Parse(n)).ToList();
+                    result[temp[0]] = temp.Skip(1).ToList();
                 }
             }
             return result;
         }
 
-        public static void PrintGraph(List<List<int>> graph)
+        public static void PrintGraph(Dictionary<int, List<int>> graph)
         {
-            for (var i = 0; i < graph.Count; i++)
+            foreach (var item in graph)
             {
-                Console.Write($"{i + 1} => ");
+                Console.Write($"{item.Key} => ");
                 Console.Write("( ");
-                foreach (var item in graph[i])
+                foreach (var n in item.Value)
                 {
-                    Console.Write($"{item} ");
+                    Console.Write($"{n} ");
                 }
                 Console.WriteLine(")");
             }

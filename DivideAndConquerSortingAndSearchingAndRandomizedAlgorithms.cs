@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Algorithms_Specialization
@@ -157,9 +158,41 @@ namespace Algorithms_Specialization
         /// aka : <see href="https://en.wikipedia.org/wiki/Karger%27s_algorithm">Karger's algorithm</see>
         /// </summary>
         /// <returns>A minimum cut of a connected graph.</returns>
-        public static int ComputeMinCut(List<List<int>> graph)
+        public static int ComputeMinCut(Dictionary<int, List<int>> graph)
         {
-            return 0;
+            var random = new Random();
+            var graphCopy = graph.ToDictionary(item => item.Key, item => item.Value.ToList());
+
+            while (graphCopy.Count > 2)
+            {
+                var u = graphCopy.Keys.ElementAt(random.Next(0, graphCopy.Keys.Count));
+                var v = graphCopy[u].ElementAt(random.Next(0, graphCopy[u].Count));
+                if (!graphCopy.ContainsKey(v))
+                    continue;
+                Contract(graphCopy, u, v);
+            }
+            return graphCopy.First().Value.Count;
+        }
+
+        private static void Contract(Dictionary<int, List<int>> graph, int u, int v)
+        {
+            //Merge
+            foreach (var edge in graph[v])
+            {
+                if (!graph[u].Contains(edge) && edge != u)
+                    graph[u].Add(edge);
+            }
+
+            foreach (var vertex in graph)
+            {
+                if (vertex.Value.Contains(v))
+                {
+                    vertex.Value.Remove(v);
+                    vertex.Value.Add(u);
+                }
+            }
+            
+            graph.Remove(v);
         }
     }
 }

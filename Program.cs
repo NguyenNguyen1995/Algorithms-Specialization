@@ -25,8 +25,14 @@ namespace Algorithms_Specialization
 
             // Compute Min cuts of given graph
             var graph = Helpers.LoadGraphFromFile(@"./KargerMinCut.txt");
-            Helpers.PrintGraph(graph);
-            DivideAndConquerSortingAndSearchingAndRandomizedAlgorithms.ComputeMinCut(graph);
+            // Helpers.PrintGraph(graph);
+            var min = int.MaxValue;
+            for (var i = 0; i < 100; i++)
+            {
+                var result = DivideAndConquerSortingAndSearchingAndRandomizedAlgorithms.ComputeMinCut(graph);
+                min = Math.Min(result, min);
+            }
+            Console.WriteLine($"min cut = {min}");
         }
     }
 }
