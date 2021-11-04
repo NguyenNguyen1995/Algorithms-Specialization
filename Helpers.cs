@@ -15,8 +15,8 @@ namespace Algorithms_Specialization
                 string line;
                 while ((line = file.ReadLine()) != null)
                 {
-                    var temp = line.Trim().Split().Select(n => int.Parse(n)).ToList();
-                    result[temp[0]] = temp.Skip(1).ToList();
+                    var vertices = line.Trim().Split().Select(n => int.Parse(n)).ToList();
+                    result[vertices[0]] = vertices.Skip(1).ToList();
                 }
             }
             return result;

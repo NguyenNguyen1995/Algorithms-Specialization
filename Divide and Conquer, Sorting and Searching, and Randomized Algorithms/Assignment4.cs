@@ -10,17 +10,17 @@ namespace Algorithms_Specialization.Divide_and_Conquer_Sorting_and_Searching_and
 
         public static void SolveProblem()
         {
-            var graph = Helpers.LoadGraphFromFile(@"./kargerMinCut1.txt");
+            var graph = Helpers.LoadGraphFromFile(@"./kargerMinCut.txt");
             // Helpers.PrintGraph(graph);
-            var min = int.MaxValue;
 
-            for (var i = 0; i < 10; i++)
+            var cuts = new List<int>();
+            for (var i = 0; i < 200; i++)
             {
                 var result = new Assignment4().ComputeMinCut(graph);
-                min = Math.Min(result, min);
+                cuts.Add(result);
             }
-            
-            Console.WriteLine($"min cut = {min}");
+
+            Console.WriteLine($"Min cut is {cuts.Min()}");
         }
 
         /// <summary>
@@ -34,36 +34,43 @@ namespace Algorithms_Specialization.Divide_and_Conquer_Sorting_and_Searching_and
 
             while (graphCopy.Count > 2)
             {
-                var u = graphCopy.Keys.ElementAt(_random.Next(0, graphCopy.Keys.Count));
-                var v = graphCopy[u].ElementAt(_random.Next(0, graphCopy[u].Count));
-                Contract(graphCopy, u, v);
+                var keyVertices = graphCopy.Keys.ToList();
+                var baseVertex = keyVertices[_random.Next(keyVertices.Count)];
+                var mergeVertex = graphCopy[baseVertex].ElementAt(_random.Next(graphCopy[baseVertex].Count));
+
+                if (baseVertex == mergeVertex)
+                    continue;
+
+                Contract(graphCopy, baseVertex, mergeVertex);
             }
-            // TODO:
-            return Math.Max(graphCopy.First().Value.Count, graphCopy.Last().Value.Count);
+            // They are symmetric so use both case is ok
+            return graphCopy.First().Value.Count;
         }
 
-        private void Contract(Dictionary<int, List<int>> graph, int u, int v)
+        private void Contract(Dictionary<int, List<int>> graph, int baseVertex, int mergeVertex)
         {
-            foreach (var edge in graph[v])
-            {
-                if (!graph[u].Contains(edge))
-                    graph[u].Add(edge);
-            }
+            // contract between base and vertex wanted to merge
+            graph[baseVertex].AddRange(graph[mergeVertex].Where(v => v != baseVertex));
+            // Remove self loop
+            graph[baseVertex].RemoveAll(v => v == mergeVertex);
 
             foreach (var vertex in graph)
             {
+                // skip base and merge vertex
+                if(vertex.Key == mergeVertex || vertex.Key == baseVertex)
+                    continue;
+
                 var index = -1;
                 do
                 {
-                    index = vertex.Value.IndexOf(v);
+                    index = vertex.Value.IndexOf(mergeVertex);
                     if (index != -1)
-                        vertex.Value[index] = u;
+                        vertex.Value[index] = baseVertex;
                 } while (index != -1);
             }
 
-            //Remove Self Loops
-            graph[u].RemoveAll(_ => _ == u);
-            graph.Remove(v);
+            // remove vertex after merge
+            graph.Remove(mergeVertex);
         }
     }
 }
