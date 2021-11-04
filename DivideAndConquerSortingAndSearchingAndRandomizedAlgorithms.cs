@@ -167,31 +167,33 @@ namespace Algorithms_Specialization
             {
                 var u = graphCopy.Keys.ElementAt(random.Next(0, graphCopy.Keys.Count));
                 var v = graphCopy[u].ElementAt(random.Next(0, graphCopy[u].Count));
-                if (!graphCopy.ContainsKey(v))
-                    continue;
                 Contract(graphCopy, u, v);
             }
-            return graphCopy.First().Value.Count;
+            // TODO:
+            return Math.Max(graphCopy.First().Value.Count, graphCopy.Last().Value.Count);
         }
 
         private static void Contract(Dictionary<int, List<int>> graph, int u, int v)
         {
-            //Merge
             foreach (var edge in graph[v])
             {
-                if (!graph[u].Contains(edge) && edge != u)
+                if (!graph[u].Contains(edge))
                     graph[u].Add(edge);
             }
 
             foreach (var vertex in graph)
             {
-                if (vertex.Value.Contains(v))
+                var index = -1;
+                do
                 {
-                    vertex.Value.Remove(v);
-                    vertex.Value.Add(u);
-                }
+                    index = vertex.Value.IndexOf(v);
+                    if (index != -1)
+                        vertex.Value[index] = u;
+                } while (index != -1);
             }
-            
+
+            //Remove Self Loops
+            graph[u].RemoveAll(_ => _ == u);
             graph.Remove(v);
         }
     }

@@ -24,10 +24,10 @@ namespace Algorithms_Specialization
             // Console.WriteLine($"Total comparisions = {c}");
 
             // Compute Min cuts of given graph
-            var graph = Helpers.LoadGraphFromFile(@"./KargerMinCut.txt");
+            var graph = Helpers.LoadGraphFromFile(@"./kargerMinCut1.txt");
             // Helpers.PrintGraph(graph);
             var min = int.MaxValue;
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var result = DivideAndConquerSortingAndSearchingAndRandomizedAlgorithms.ComputeMinCut(graph);
                 min = Math.Min(result, min);
